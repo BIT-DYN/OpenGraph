@@ -1,0 +1,95 @@
+# 加载数据集相关
+basedir: /data/dyn/SemanticKitti/sequences/
+sequence: !!str 08
+stride: 10   # 图像间隔
+start: 2510
+end: 2620
+
+# 生成caption相关
+save_vis: !!bool True                          # 是否保存可视化
+save_cap: !!bool True                          # 是否caption数据
+save_vis_path: ../results/${sequence}/vis/
+save_cap_path: ../results/${sequence}/caption/
+tag2text_path: /home/dyn/multimodal/Grounded-Segment-Anything/Tag2Text/tag2text_swin_14m.pth
+gd_path: /home/dyn/multimodal/Grounded-Segment-Anything/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
+gd_weights: /home/dyn/multimodal/Grounded-Segment-Anything/groundingdino_swint_ogc.pth
+tap_path: /home/dyn/outdoor/tokenize-anything/weights/tap_vit_l_03f8ec.pkl
+tap_merge_path: /home/dyn/outdoor/tokenize-anything/weights/merged_2560.pkl
+sbert_path: /home/dyn/multimodal/SBERT/pretrained/model/all-MiniLM-L6-v2
+
+# 生成点云地图相关
+filter_dis: !!bool False                       # 是否过滤太远的物体
+max_depth: 100                                 # 设置最大点云距离，过大不要
+bg_rate: 0.80                                  # 判断属于背景的概率
+min_points_threshold: 80                       # 单帧低于这个数量的实例直接不要
+filter_dynamic: !!bool True                    # 是否过滤动态物体
+mos_path: /home/dyn/outdoor/4DMOS/10_scans.ckpt                               # 4DMOS的权重路径，10对应我们的stride，一定一致
+moving_thre: 0.5                               # 判断是否为动态物体的阈值
+dbscan_remove_noise: !!bool True               # 是否通过聚类，移除噪点
+dbscan_eps: 0.5                                # 聚类参数
+dbscan_min_points: 20                          # 聚类参数
+voxel_size: 0.1                                # 点云降采样数值
+vis_all: !!bool False                           # 在构建完地图还没有最后处理之前是否可视化一下
+
+# 增量融合相关
+use_bg: !!bool True                            # 是否使用背景，把背景当做一个物体
+spatial_weight: 1.0                            # 空间相似性的权重，这个很重要
+caption_weight: 0.2                            # caption相似性的权重
+ft_weight: 0.4                                 # 特征相似性的权重
+sim_threshold: 0.6                             # 整合相似性得分的阈值
+llama_ckpt_dir: '/data/dyn/weights/llama_ckpt/llama-2-7b-chat/'               # llama ckpt路径
+llama_tokenizer_path: '/data/dyn/weights/llama_ckpt/tokenizer.model'          # llama 分词器路径
+llama_max_seq_len: 512                         # llama 最大输入token长度
+llama_max_batch_size: 8                        # llama 最大dialog处理数目
+caption_merge_ft: !!bool True                  # 融合完成caption之后是否计算其特征
+
+# 地图保存和后处理
+save_pcd: !!bool True                          # 是否保存最终地图   
+save_pcd_path: ../results/${sequence}/pcd/     # 保存pcd地图的位置
+obj_min_points: 50                             # 最后点云的物体至少这些点，否则不要
+obj_min_detections: 1                          # 最后点云的物体至少被观测这些次，否则不要，很多只有1次观测
+merge_final: !!bool True                       # 是否融合最后的地图
+merge_overlap_thresh: 0.1                      # 最后点云重叠度太大的要准备融合
+merge_ft_thresh: 0.3                           # 最后的融合还要看一下特征相似性
+max_caption_num: 4                             # caption不能累积太多，不然llama处理不了
+class_methods: llama                             # 判断最后class类别名称的方法 sbert llama gpt
+gpt_max_num: 30                                # gpt一次询问的最大数量，太多了后面的容易出错
+spacy: !!bool True                             # class_methods=sbert时 是否先使用spacy进行提取
+caption_only: !!bool False                     # spacy=True时 是否只使用纯caption来对齐class
+openai_key: sk-Dr1KHY31ZFGHGvLhD0927d94Fc58483f9c5d0c9fDd5800C2               # gpt4的key
+api_base: https://api.pumpkinaigc.online/v1    # openai国内代理地址
+class_colors_json: /home/dyn/outdoor/omm/class_colors/class_colors.json       # semantickitti类别及颜色json文件
+
+# 可视化相关
+vis_sequence: !!str 08
+result_path: /home/dyn/outdoor/results/${vis_sequence}/pcd/full_pcd.pkl.gz       # 读取的物体结果地址
+vis_ft_weight: 0.5                                                            # 多模态检索时所用的ft特征权重
+vis_caption_weight: 0.5                                                       # 多模态检索时所用的最终caption权重
+scenegraph_path: /home/dyn/outdoor/results/${vis_sequence}/pcd/object_relations.json       # 读取的物体间关系结果地址
+scenegraph_vis: !!bool False                                                  # 是否可视化场景图
+save_image_vis_path: ../results/image_query/vis/                              # 图像检索的目录
+save_image_vis: !!bool False                                                  # 是否保存检索的图像效果
+no_sbert: !!bool False                                                        # 不需要sbert模型来检索
+no_tap: !!bool False                                                          # 不需要tap模型来获取caption
+
+# 定量评估相关
+eva_sequence: !!str 05
+result_path_pc: /home/dyn/outdoor/results/${eva_sequence}/pcd/full_pcd_llama_all.pkl.gz    # 用于生成点云的地址
+eva_result_path: /home/dyn/outdoor/omm/evaluation/result_${eva_sequence}.xlsx       # 定量结果保存地址
+num_eva: 500000                               # 采样多少个点进行评估呢
+if_same: !!bool False                          # 是否所有方法使用完全相同的采样点 False True
+sk_yaml: /home/dyn/outdoor/omm/class_colors/sk.yaml                           # semantickitti的真值label配置
+gt_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/gt_pc.pcd                            # semantickitti的真值语义地图保存
+rn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/rn_pc.pcd1                            # RangeNet++的语义地图保存
+dn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dn_pc.pcd1                            # Draknet++的语义地图保存
+cy_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/cy_pc.pcd1                            # Cylinder3D的语义地图保存
+ss_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/ss_pc.pcd1                            # SqueezeSegV3的语义地图保存
+our_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/our_pc.pcd                          # 我们的语义地图
+dl_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dl_pc.pcd1                            # DeepLab的语义地图
+dsn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dsn_pc.pcd1                          # DSN的语义地图
+vit_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/vit_pc.pcd1                          # VIT的语义地图
+clip_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/clip_pc.pcd1                        # CLIP的语义地图
+blip_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/blip_pc.pcd1                        # BLIP的语义地图
+rgb_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/rgb_pc.pcd                           # RGB地图
+rmrgb_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/remove_pc.pcd                           # RMRGB地图
+

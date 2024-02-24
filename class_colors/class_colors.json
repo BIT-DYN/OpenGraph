@@ -1,0 +1,21 @@
+{
+    "car": [245, 150, 100],
+    "bicycle": [245, 230, 100],
+    "motorcycle": [150, 60, 30],
+    "truck": [180, 30, 80],
+    "other-vehicle": [255, 0, 0],
+    "person": [30, 30, 255],
+    "bicyclist": [200, 40, 255],
+    "motorcyclist": [90, 30, 150],
+    "road": [255, 0, 255],
+    "parking": [255, 150, 255],
+    "sidewalk": [75, 0, 75],
+    "other-ground": [75, 0, 175],
+    "building": [0, 200, 255],
+    "fence": [50, 120, 255],
+    "vegetation": [0, 175, 0],
+    "trunk": [0, 60, 135],
+    "terrain": [80, 240, 150],
+    "pole": [150, 240, 255],
+    "traffic-sign": [0, 0, 255]
+}
