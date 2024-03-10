@@ -1,4 +1,4 @@
-# OpenGrpahs
+# OpenGrpah
 OpenGraphs: Open-Vocabulary Hierarchical 3D Scene Graphs in Large-Scale Outdoor Environments
 
  ## Abstract
