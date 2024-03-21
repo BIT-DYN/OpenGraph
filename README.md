@@ -1,9 +1,17 @@
-# OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments
+<br>
+<p align="center">
+<h1 align="center"><strong>OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments</strong></h1>
+</p>
 
 
-[**Arxiv**](https://arxiv.org/abs/2403.09412)
+<p align="center">
+  <a href="https://arxiv.org/abs/2403.09412" target='_blank'>
+    <img src="https://img.shields.io/badge/Paper-📖-blue?">
+  </a> 
+</p>
 
- ## Abstract
+
+ ## 🏠  Abstract
 Environment representations endowed with sophisticated semantics are pivotal for facilitating seamless interaction between robots and humans, enabling them to effectively carry out various tasks. Open-vocabulary maps, powered by Visual-Language models (VLMs), possess inherent advantages, including zero-shot learning and support for open-set classes.
 However, existing open-vocabulary maps are primarily designed for small-scale environments, such as desktops or rooms, and are typically geared towards limited-area tasks involving robotic indoor navigation or in-place manipulation. They face challenges in direct generalization to outdoor environments characterized by numerous objects and complex tasks, owing to limitations in both understanding level and map structure.
 In this work, we propose OpenGraph, the first open-vocabulary hierarchical graph representation designed for large-scale outdoor environments. 
@@ -11,7 +19,7 @@ OpenGraph initially extracts instances and their captions from visual images, en
  
 <img src="https://github.com/BIT-DYN/OpenGraph/blob/master/fig/first.jpg">
 
-## Install
+## 🛠  Install
 
 ### Install the required libraries
 Use conda to install the required environment. To avoid problems, it is recommended to follow the instructions below to set up the environment.
@@ -93,14 +101,14 @@ cd OpenGraph
 ### Modify the configuration file
 You should modify the configuration file ```config/semantickitti.yaml``` according to the address of each file you just installed.
 
-## Prepare dataset
+## 📊 Prepare dataset
 OpenGraph has completed validation primarily on SemanticKITTI. 
 
 Please download their data from the former [official website](http://www.semantic-kitti.org/
 ), which can be any sequence of them. 
 
 
-## Run
+## 🏃 Run
 
 ### Generate caption and features
 Run the following command to output the results of instance detection and feature extraction against the image.
@@ -150,5 +158,23 @@ Visualize the hierarchical scene graph of the final build.
 ```bash
 python script/gen_lane.py
 ```
+
+
+## 🔗 Citation
+
+If you find our work helpful, please cite:
+
+```bibtex
+@article{opengraph,
+  title={OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments},
+  author={Deng, Yinan and Wang, Jiahui  and Zhao, Jingyu and Tian, Xinyu and Chen, Guangyan and Yang, Yi and Yue, Yufeng},
+  booktitle={{arXiv preprint arXiv:2403.09412},
+  year={2024}
+}
+```
+
+## 👏 Acknowledgements
+We would like to express our gratitude to the open-source projects and their contributors [Concept-Graph]([https://github.com/MendelXu/zsseg.baseline](https://github.com/concept-graphs/concept-graphs)). 
+Their valuable work has greatly contributed to the development of our codebase.
 
 
