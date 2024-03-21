@@ -125,11 +125,16 @@ python script/visualize.py
 ```
 Then in the open3d visualizer window, you can use the following key callbacks to change the visualization.
 
-Press ```B``` to toggle the background point clouds (wall, floor, ceiling, etc.). Only works on the ConceptGraphs-Detect.
-Press ```C``` to color the point clouds by the object class from the tagging model. Only works on the ConceptGraphs-Detect.
+Press ```B``` to toggle the background point clouds (wall, floor, ceiling, etc.).
+
+Press ```C``` to color the point clouds by the object class from the tagging model. 
+
 Press ```R``` to color the point clouds by RGB.
+
 Press ```F``` and type text in the terminal, and the point cloud will be colored by the CLIP similarity with the input text.
+
 Press ```I``` to color the point clouds by object instance ID.
+
 Press ```G``` to visualize the instance-level scene graph.
 
 ### Building Hierarchical Graph
