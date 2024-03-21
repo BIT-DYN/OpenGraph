@@ -56,8 +56,8 @@ class_methods: llama                             # 判断最后class类别名称
 gpt_max_num: 30                                # gpt一次询问的最大数量，太多了后面的容易出错
 spacy: !!bool True                             # class_methods=sbert时 是否先使用spacy进行提取
 caption_only: !!bool False                     # spacy=True时 是否只使用纯caption来对齐class
-openai_key: sk-Dr1KHY31ZFGHGvLhD0927d94Fc58483f9c5d0c9fDd5800C2               # gpt4的key
-api_base: https://api.pumpkinaigc.online/v1    # openai国内代理地址
+openai_key: your_key               # gpt4的key
+api_base: your_api    # openai国内代理地址
 class_colors_json: /home/dyn/outdoor/omm/class_colors/class_colors.json       # semantickitti类别及颜色json文件
 
 # 可视化相关
@@ -71,25 +71,4 @@ save_image_vis_path: ../results/image_query/vis/                              # 
 save_image_vis: !!bool False                                                  # 是否保存检索的图像效果
 no_sbert: !!bool False                                                        # 不需要sbert模型来检索
 no_tap: !!bool False                                                          # 不需要tap模型来获取caption
-
-# 定量评估相关
-eva_sequence: !!str 05
-result_path_pc: /home/dyn/outdoor/results/${eva_sequence}/pcd/full_pcd_llama_all.pkl.gz    # 用于生成点云的地址
-eva_result_path: /home/dyn/outdoor/omm/evaluation/result_${eva_sequence}.xlsx       # 定量结果保存地址
-num_eva: 500000                               # 采样多少个点进行评估呢
-if_same: !!bool False                          # 是否所有方法使用完全相同的采样点 False True
-sk_yaml: /home/dyn/outdoor/omm/class_colors/sk.yaml                           # semantickitti的真值label配置
-gt_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/gt_pc.pcd                            # semantickitti的真值语义地图保存
-rn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/rn_pc.pcd1                            # RangeNet++的语义地图保存
-dn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dn_pc.pcd1                            # Draknet++的语义地图保存
-cy_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/cy_pc.pcd1                            # Cylinder3D的语义地图保存
-ss_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/ss_pc.pcd1                            # SqueezeSegV3的语义地图保存
-our_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/our_pc.pcd                          # 我们的语义地图
-dl_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dl_pc.pcd1                            # DeepLab的语义地图
-dsn_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/dsn_pc.pcd1                          # DSN的语义地图
-vit_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/vit_pc.pcd1                          # VIT的语义地图
-clip_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/clip_pc.pcd1                        # CLIP的语义地图
-blip_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/blip_pc.pcd1                        # BLIP的语义地图
-rgb_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/rgb_pc.pcd                           # RGB地图
-rmrgb_pcd: /home/dyn/outdoor/results/${eva_sequence}/pcd/remove_pc.pcd                           # RMRGB地图
 

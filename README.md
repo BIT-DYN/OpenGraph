@@ -1,41 +1,149 @@
-# OpenGrpah
-OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments
+# OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments
 
-[**PDF**](https://arxiv.org/abs/2403.09412)
+
+[**Arxiv**](https://arxiv.org/abs/2403.09412)
 
  ## Abstract
-Environment maps endowed with sophisticated semantics are pivotal for facilitating seamless interaction between robots and humans, enabling them to effectively carry out various tasks. Open-vocabulary maps, powered by Visual-Language models (VLMs), possess inherent advantages, including multimodal retrieval and open-set classes.
-However, existing open-vocabulary maps are constrained to closed indoor scenarios and VLM features, thereby diminishing their usability and inference capabilities. Moreover, the absence of topological relationships further complicates the accurate querying of specific instances.
-In this work, we propose OpenGraph, a representation of open-vocabulary hierarchical graph structure designed for large-scale outdoor environments. 
-OpenGraph initially extracts instances and their captions from visual images using 2D foundation models, encoding the captions with features to enhance textual reasoning. Subsequently, 3D incremental panoramic mapping with feature embedding is achieved by projecting images onto LiDAR point clouds. Finally, the environment is segmented based on lane graph connectivity to construct a hierarchical graph. Validation results from real public dataset SemanticKITTI demonstrate that, even without fine-tuning the models, OpenGraph exhibit the ability to generalize to novel semantic classes and achieve the highest segmentation and query accuracy.
+Environment representations endowed with sophisticated semantics are pivotal for facilitating seamless interaction between robots and humans, enabling them to effectively carry out various tasks. Open-vocabulary maps, powered by Visual-Language models (VLMs), possess inherent advantages, including zero-shot learning and support for open-set classes.
+However, existing open-vocabulary maps are primarily designed for small-scale environments, such as desktops or rooms, and are typically geared towards limited-area tasks involving robotic indoor navigation or in-place manipulation. They face challenges in direct generalization to outdoor environments characterized by numerous objects and complex tasks, owing to limitations in both understanding level and map structure.
+In this work, we propose OpenGraph, the first open-vocabulary hierarchical graph representation designed for large-scale outdoor environments. 
+OpenGraph initially extracts instances and their captions from visual images, enhancing textual reasoning by encoding them. Subsequently, it achieves 3D incremental object-centric mapping with feature embedding by projecting images onto LiDAR point clouds. Finally, the environment is segmented based on lane graph connectivity to construct a hierarchical graph. Validation results from public dataset SemanticKITTI demonstrate that, OpenGraph achieves the highest segmentation and query accuracy.
  
 <img src="https://github.com/BIT-DYN/OpenGraph/blob/master/fig/first.jpg">
 
 ## Install
+
+### Install the required libraries
+Use conda to install the required environment. To avoid problems, it is recommended to follow the instructions below to set up the environment.
+
+
+```bash
+conda create -n opengraph anaconda python=3.10
+conda activate opengraph
+
+# Install the required libraries
+pip install tyro open_clip_torch wandb h5py openai hydra-core distinctipy
+
+# Install the Faiss library (CPU version should be fine)
+conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
+
+##### Install Pytorch according to your own setup #####
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+
+# Install Pytorch3D (https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md)
+# conda install pytorch3d -c pytorch3d # This detects a conflict. You can use the command below, maybe with a different version
+conda install https://anaconda.org/pytorch3d/pytorch3d/0.7.4/download/linux-64/pytorch3d-0.7.4-py310_cu118_pyt201.tar.bz2
+```
+
+
+###  Install TAG2TEXT Model
+
+```bash
+mkdir third_parties & cd third_parties
+git clone https://github.com/xinyu1205/recognize-anything.git
+pip install -r ./recognize-anything/requirements.txt
+pip install -e ./recognize-anything/
+```
+
+Download pretrained weights
+```bash
+wget https://huggingface.co/spaces/xinyu1205/Tag2Text/resolve/main/tag2text_swin_14m.pth
+```
+
+
+###  Install Grounding DINO Model
+
+```bash
+git clone https://github.com/IDEA-Research/GroundingDINO.git
+pip install --no-build-isolation -e GroundingDINO
+```
+
+Download pretrained weights
+```bash
+wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+```
+
+
+
+###  Install TAP Model
+Follow the [instructions](https://github.com/baaivision/tokenize-anything?tab=readme-ov-file#installation) to install the TAP model and download the pretrained weights [here](https://github.com/baaivision/tokenize-anything?tab=readme-ov-file#models).
+
+
+###  Install SBERT Model
+```bash
+pip install -U sentence-transformers
+```
+Download pretrained weights
+```bash
+git clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+```
+
+###  Install Llama
+Follow the [official installation](https://github.com/meta-llama/llama) of Llama2 to install it.
+
+
+
+### Clone this repo
+
 ```bash
 git clone https://github.com/BIT-DYN/OpenGraph
+cd OpenGraph
 ```
+
+### Modify the configuration file
+You should modify the configuration file ```config/semantickitti.yaml``` according to the address of each file you just installed.
+
+## Prepare dataset
+OpenGraph has completed validation primarily on SemanticKITTI. 
+
+Please download their data from the former [official website](http://www.semantic-kitti.org/
+), which can be any sequence of them. 
 
 
 ## Run
 
 ### Generate caption and features
+Run the following command to output the results of instance detection and feature extraction against the image.
 ```bash
-cd OpenGraph/
 python script/main_gen_cap.py
 ```
 ### Generate panoramic maps
+Run the following command to complete the incremental build of the 3D map.
 ```bash
 python script/main_gen_pc.py
 ```
-### Map Interaction 
-```bash
-python script/visualize.py
-```
+
 ### Generate instance-layer scene graph
 ```bash
 python script/build_scenegraph.py
 ```
 
-Other codes is coming soon...
+### Map Interaction 
+Interactions can be made using our visualization files.
+```bash
+python script/visualize.py
+```
+Then in the open3d visualizer window, you can use the following key callbacks to change the visualization.
+
+Press ```B``` to toggle the background point clouds (wall, floor, ceiling, etc.). Only works on the ConceptGraphs-Detect.
+Press ```C``` to color the point clouds by the object class from the tagging model. Only works on the ConceptGraphs-Detect.
+Press ```R``` to color the point clouds by RGB.
+Press ```F``` and type text in the terminal, and the point cloud will be colored by the CLIP similarity with the input text.
+Press ```I``` to color the point clouds by object instance ID.
+Press ```G``` to visualize the instance-level scene graph.
+
+### Building Hierarchical Graph
+Reads historical track points in two dimensions and generates a topology map of the lane graph.
+```bash
+python script/gen_lane.py
+```
+Generate a semantic point cloud pcd file for the entire sequence.
+```bash
+python script/gen_all_pc.py
+```
+Visualize the hierarchical scene graph of the final build.
+```bash
+python script/gen_lane.py
+```
+
 
