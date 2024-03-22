@@ -174,7 +174,7 @@ If you find our work helpful, please cite:
 ```
 
 ## 👏 Acknowledgements
-We would like to express our gratitude to the open-source projects and their contributors [Concept-Graph]([https://github.com/MendelXu/zsseg.baseline](https://github.com/concept-graphs/concept-graphs)). 
+We would like to express our gratitude to the open-source projects and their contributors [Concept-Graph](https://github.com/concept-graphs/concept-graphs). 
 Their valuable work has greatly contributed to the development of our codebase.
 
 
