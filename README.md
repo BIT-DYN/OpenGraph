@@ -156,7 +156,7 @@ python script/gen_all_pc.py
 ```
 Visualize the hierarchical scene graph of the final build.
 ```bash
-python script/gen_lane.py
+python script/hierarchical_vis.py
 ```
 
 
