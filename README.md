@@ -118,7 +118,7 @@ python script/main_gen_cap.py
 ### Generate panoramic maps
 Run the following command to complete the incremental build of the 3D map.
 ```bash
-python script/main_gen_pc.py
+torchrun --nproc_per_node=1 script/main_gen_pc.py
 ```
 
 ### Generate instance-layer scene graph
