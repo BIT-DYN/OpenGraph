@@ -166,17 +166,17 @@ python script/hierarchical_vis.py
 ```
 Then in the open3d visualizer window, you can use the following key callbacks to change the visualization.
 
-Press V to save current view_params.
+Press ```V``` to save current view_params.
 
-Press X to load saved view_params.
+Press ```X``` to load saved view_params.
 
-Press I to vis instance bbox.
+Press ```I``` to vis instance bbox.
 
-Press G to vis the lines among instance bbox.
+Press ```G``` to vis the lines among instance bbox.
 
-Press O to vis the left layers.
+Press ```O``` to vis the left layers.
 
-Press L to vis the lines among layers.
+Press ```L``` to vis the lines among layers.
 
 ## 🔗 Citation
 
