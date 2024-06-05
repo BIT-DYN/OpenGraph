@@ -1,16 +1,16 @@
 # 加载数据集相关
 basedir: /data/dyn/SemanticKitti/sequences/
-sequence: !!str 08
+sequence: !!str 05
 stride: 10   # 图像间隔
-start: 2510
-end: 2620
+start: 0
+end: 100
 
 # 生成caption相关
-save_vis: !!bool True                          # 是否保存可视化
+save_vis: !!bool False                          # 是否保存可视化
 save_cap: !!bool True                          # 是否caption数据
 save_vis_path: ../results/${sequence}/vis/
 save_cap_path: ../results/${sequence}/caption/
-tag2text_path: /home/dyn/multimodal/Grounded-Segment-Anything/Tag2Text/tag2text_swin_14m.pth
+tag2text_path: /data/dyn/weights/tag2text_swin_14m.pth
 gd_path: /home/dyn/multimodal/Grounded-Segment-Anything/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py
 gd_weights: /home/dyn/multimodal/Grounded-Segment-Anything/groundingdino_swint_ogc.pth
 tap_path: /home/dyn/outdoor/tokenize-anything/weights/tap_vit_l_03f8ec.pkl
@@ -58,17 +58,20 @@ spacy: !!bool True                             # class_methods=sbert时 是否�
 caption_only: !!bool False                     # spacy=True时 是否只使用纯caption来对齐class
 openai_key: your_key               # gpt4的key
 api_base: your_api    # openai国内代理地址
-class_colors_json: /home/dyn/outdoor/omm/class_colors/class_colors.json       # semantickitti类别及颜色json文件
+class_colors_json: ./class_colors/class_colors.json       # semantickitti类别及颜色json文件
 
 # 可视化相关
-vis_sequence: !!str 08
-result_path: /home/dyn/outdoor/results/${vis_sequence}/pcd/full_pcd.pkl.gz       # 读取的物体结果地址
+vis_sequence: !!str 05
+result_path: ../results/${vis_sequence}/pcd/full_pcd.pkl.gz       # 读取的物体结果地址
 vis_ft_weight: 0.5                                                            # 多模态检索时所用的ft特征权重
 vis_caption_weight: 0.5                                                       # 多模态检索时所用的最终caption权重
-scenegraph_path: /home/dyn/outdoor/results/${vis_sequence}/pcd/object_relations.json       # 读取的物体间关系结果地址
+scenegraph_path: ../results/${vis_sequence}/pcd/object_relations.json       # 读取的物体间关系结果地址
 scenegraph_vis: !!bool False                                                  # 是否可视化场景图
 save_image_vis_path: ../results/image_query/vis/                              # 图像检索的目录
 save_image_vis: !!bool False                                                  # 是否保存检索的图像效果
 no_sbert: !!bool False                                                        # 不需要sbert模型来检索
 no_tap: !!bool False                                                          # 不需要tap模型来获取caption
 
+# 场景图先关
+save_lane_path:  ../results/${sequence}/graph+road.json                   # 保存路网的地址 
+our_pcd: ../results/${sequence}/pcd/our_pc.pcd                          # 我们的语义地图

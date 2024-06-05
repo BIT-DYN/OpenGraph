@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import pickle
 import gzip
 from pathlib import Path

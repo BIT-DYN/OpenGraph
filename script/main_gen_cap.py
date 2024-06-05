@@ -3,7 +3,7 @@
 传入三个大模型，得到数据集中的图像的caption和mask
 """
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt

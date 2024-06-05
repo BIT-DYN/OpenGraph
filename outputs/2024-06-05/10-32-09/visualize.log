@@ -1,0 +1,4 @@
+[2024-06-05 10:32:17,062][sentence_transformers.SentenceTransformer][INFO] - Load pretrained SentenceTransformer: /home/dyn/multimodal/SBERT/pretrained/model/all-MiniLM-L6-v2
+[2024-06-05 10:32:18,101][sentence_transformers.SentenceTransformer][INFO] - Use pytorch device: cuda
+[2024-06-05 10:32:18,208][root][INFO] - Reloaded SentencePiece model from /home/dyn/anaconda3/envs/conceptgraph/lib/python3.10/site-packages/tokenize_anything/modeling/text_tokenizer.model
+[2024-06-05 10:32:18,209][root][INFO] - #words: 32000 - BOS ID: 1 - EOS ID: 2

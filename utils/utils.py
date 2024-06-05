@@ -3,7 +3,7 @@
 工具函数文件
 """
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -13,7 +13,7 @@ from typing import List, Dict, Optional, Any
 from tokenize_anything import model_registry
 sys.path.append("/home/dyn/multimodal/Grounded-Segment-Anything")
 sys.path.append("/home/dyn/multimodal/Grounded-Segment-Anything/Tag2Text")
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 from some_class.amg_class import MyAutomaticMaskGenerator
 from some_class.map_calss import DetectionList
 import open3d as o3d

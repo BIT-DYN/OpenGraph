@@ -4,11 +4,12 @@
 """
 import sys
 import numpy as np
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import matplotlib.pyplot as plt
 import json
 from pathlib import Path
 from omegaconf import DictConfig
+from some_class.datasets_class import SemanticKittiDataset
 import hydra
 from sklearn.neighbors import KDTree
 from sklearn.cluster import DBSCAN
@@ -229,11 +230,21 @@ def road_point(points, lines):
 
 @hydra.main(version_base=None, config_path="../config", config_name="semantickitti")
 def main(cfg : DictConfig):
-    pose_save_path = "/home/dyn/outdoor/results/05/trans_poses.txt"
-    current_poses = []
-    with open(pose_save_path, 'r') as f:
+    
+    datasets = SemanticKittiDataset(cfg.basedir, cfg.sequence, stride=cfg.stride, start=cfg.start, end=cfg.end)
+    # 得到二维轨迹
+    pose_file = datasets.pose_path
+    poses = []
+    with open(pose_file, 'r') as f:
         for line in f:
-            current_poses.append(json.loads(line.strip()))
+            pose = np.fromstring(line, sep=' ')
+            pose = pose.reshape(3, 4)
+            poses.append(pose)
+    poses = poses[::cfg.stride]
+    # extract (x,y,z)
+    current_poses = np.array([pose[:3, 3] for pose in poses])
+    current_poses = [[row[0], row[2]] for row in current_poses]
+    
     current_poses = np.array(current_poses)       
     # 使用KD树构建二维轨迹点的索引
     kd_tree = KDTree(current_poses)
@@ -241,6 +252,7 @@ def main(cfg : DictConfig):
     # 计算每个轨迹点的夹角差值
     mean_angles = []
     duandians = []
+    print(len(current_poses))
     for current_pose in current_poses:
         x, y = current_pose
         # 使用KD树查询半径20m内的所有点
@@ -318,7 +330,6 @@ def main(cfg : DictConfig):
     edges = dividing(nodes, edges)
     road_points = road_point(nodes, edges)
     
-    name = "test/graph+road.json"
     edges = [(int(u), int(v), int(w)) for u, v, w in edges]  # 将 numpy.int64 转换为 int
     road_points = {key: [point for point in points] for key, points in road_points.items()}  # 将 numpy 数组转换为 Python 列表
     data = {
@@ -326,46 +337,46 @@ def main(cfg : DictConfig):
         "edges": edges,
         "road_points": road_points
     }
-    with open(name, "w") as f:
+    with open(cfg.save_lane_path, "w") as f:
         json.dump(data, f)
     
-    # plt.clf()
-    # # 接受到路网之后，绘制路网和路径
-    # if nodes is not None:
-    #     # 绘制边，
-    #     for i, (u, v, w) in enumerate(edges):
-    #         x = [nodes[u][0], nodes[v][0]]
-    #         y = [nodes[u][1], nodes[v][1]]
-    #         #L交叉路口
-    #         if w == 2:     
-    #             plt.plot(x, y, linewidth=1, color='darkblue')
-    #         #T交叉路口   
-    #         elif w == 3:
-    #             plt.plot(x, y, linewidth=1, color='darkred')
-    #             #十字交叉路口   
-    #         elif w == 4:
-    #             plt.plot(x, y, linewidth=1, color='darkorange')
-    #         #正常直路
-    #         else:
-    #             plt.plot(x, y, linewidth=1, color='darkgreen')
+    plt.clf()
+    # 接受到路网之后，绘制路网和路径
+    if nodes is not None:
+        # 绘制边，
+        for i, (u, v, w) in enumerate(edges):
+            x = [nodes[u][0], nodes[v][0]]
+            y = [nodes[u][1], nodes[v][1]]
+            #L交叉路口
+            if w == 2:     
+                plt.plot(x, y, linewidth=1, color='darkblue')
+            #T交叉路口   
+            elif w == 3:
+                plt.plot(x, y, linewidth=1, color='darkred')
+                #十字交叉路口   
+            elif w == 4:
+                plt.plot(x, y, linewidth=1, color='darkorange')
+            #正常直路
+            else:
+                plt.plot(x, y, linewidth=1, color='darkgreen')
     
-    # # 可视化
-    # # plt.scatter([p[0] for p in current_poses], [p[1] for p in current_poses], c='black', s=20)
-    # # plt.scatter([p[0] for p in current_poses], [p[1] for p in current_poses], c=mean_angles, s=20, cmap='viridis')
-    # # plt.scatter([p[0] for p in use_points], [p[1] for p in use_points], c=mean_angles[mask], cmap='viridis')
-    # # plt.scatter([p[0] for p in unique_cluster_centers], [p[1] for p in unique_cluster_centers], c='red', s=200, marker='*', label='Cluster Centers')
-    # # plt.scatter([p[0] for p in duandians], [p[1] for p in duandians], c='darkorange', s=200, marker='*', label='Cluster Centers')
-    # # plt.scatter([p[0] for p in nodes], [p[1] for p in nodes], c='darkorange', s=200, marker='*')
-    # # for path in paths:
-    # #     plt.plot([path[0][0], path[1][0]], [path[0][1], path[1][1]], c='green')
-    # # for edge in edges:
-    # #     plt.plot([nodes[edge[0]][0], nodes[edge[1]][0]], [nodes[edge[0]][1], nodes[edge[1]][1]], c='green')
-    # # plt.legend()
-    # # plt.colorbar(label='Trajectory Order')
-    # plt.title("Lane traj Colored by Trajectory Order")
-    # plt.xlabel("X")
-    # plt.ylabel("Y")
-    # plt.savefig("traj_colored.png", dpi=500)
+    # 可视化
+    # plt.scatter([p[0] for p in current_poses], [p[1] for p in current_poses], c='black', s=20)
+    # plt.scatter([p[0] for p in current_poses], [p[1] for p in current_poses], c=mean_angles, s=20, cmap='viridis')
+    # plt.scatter([p[0] for p in use_points], [p[1] for p in use_points], c=mean_angles[mask], cmap='viridis')
+    # plt.scatter([p[0] for p in unique_cluster_centers], [p[1] for p in unique_cluster_centers], c='red', s=200, marker='*', label='Cluster Centers')
+    # plt.scatter([p[0] for p in duandians], [p[1] for p in duandians], c='darkorange', s=200, marker='*', label='Cluster Centers')
+    # plt.scatter([p[0] for p in nodes], [p[1] for p in nodes], c='darkorange', s=200, marker='*')
+    # for path in paths:
+    #     plt.plot([path[0][0], path[1][0]], [path[0][1], path[1][1]], c='green')
+    # for edge in edges:
+    #     plt.plot([nodes[edge[0]][0], nodes[edge[1]][0]], [nodes[edge[0]][1], nodes[edge[1]][1]], c='green')
+    # plt.legend()
+    # plt.colorbar(label='Trajectory Order')
+    plt.title("Lane traj Colored by Trajectory Order")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.savefig("traj_colored.png", dpi=500)
 
 if __name__ == "__main__":
     main()

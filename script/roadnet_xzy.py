@@ -1,9 +1,9 @@
 """
 2024.02.21
-构建路网层、环境层、道路层
+根据自动路网构建路网层、环境层、道路层，并上色
 """
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import os
 import numpy as np
 import open3d as o3d
@@ -13,40 +13,30 @@ from omegaconf import DictConfig
 from scipy.spatial.transform import Rotation as R
 # from visualize import lines_from_ordered_points, create_edge_mesh
 from collections import defaultdict
-
+import json
 
 
 
 
 def init_graph(graph_file,height):
     # 读取节点和边数据
-    with open(graph_file, 'r') as f:
-        lines = f.readlines()
+    with open(graph_file, "r") as f:
+        graph_road = json.load(f)
     # 解析节点数据
-    nodes = []
-    for line in lines:
-        line = line.strip()
-        if not line:
-            break
-        parts = line.split()
-        x, y,z = float(parts[0]), height,float(parts[1])
-        nodes.append((x,y,z))
+    road_node = graph_road["nodes"]
+    nodes=[]
+    for i,node in enumerate(road_node):
+        x, y,z = node
+        nodes.append((x,height,y))
+        # nodes.append((x,y,height))
     # 解析边数据
-    edges = []
-    for line in lines[len(nodes) + 1:]:
-        line = line.strip()
-        if not line:
-            continue
-        parts = line.split()
-        u, v,w = int(parts[0]), int(parts[1]),int(parts[2])
-        edges.append((u, v,w))
-        # print((u, v,w))
+    edges = graph_road["edges"]
     return nodes,edges
-
-def road_point():
-    graph_file = os.path.join( './test/05_3D.graph') 
+  #得到划分好的道路层
+def road_point(save_lane_path):
+    graph_file = save_lane_path
     #读取文件中的点线
-    points,lines=init_graph(graph_file,-100)
+    points,lines=init_graph(graph_file,-150)
     # print(points)
     # print(lines)
     # lines = np.asarray(okk.edges)
@@ -87,7 +77,8 @@ def road_point():
     clusters[2] = [points[vertex] for vertex, count in vertex_2_count.items() if count == 4]
     clusters[3] = [points[vertex] for vertex, count in vertex_3_count.items() if count == 6]
     clusters[4] = [points[vertex] for vertex, count in vertex_4_count.items() if count == 8]
-
+    
+    #四类道路点序号0-12 13-18 19-20 21
     # 输出分类结果
     # for weight, points_list in clusters.items():
     #     print(f"权值 {weight} 对应的点:")
@@ -95,28 +86,34 @@ def road_point():
     #         print(point)
     return clusters
      
-def color_by_road_net():
+def color_by_road_net(save_lane_path):
     #point and line
 
-    graph_file = os.path.join( './test/05_3D.graph') 
+
+    graph_file = save_lane_path
     
-    points,lines_0=init_graph(graph_file,-25)
+    points,lines_0=init_graph(graph_file,-50)
+    points_np = np.array(points)
+    print(points_np.shape)
+    points_mean = np.mean(points_np, axis=0)[:3]
+    print(points_mean)
     #读取文件中的点线
     # lines = okk.edges
     lines = np.asarray(lines_0)
     # 创建球体和圆柱体
     sphere_radius = 3  # 球体半径
     cylinder_radius = 1.5  # 圆柱体半径
-    road_sphere_radius = 4  # 道路球体半径
+    road_sphere_radius = 3  # 道路球体半径
     # 创建球体和圆柱体列表
     spheres = []
     cylinders = []
     spheres_road=[]
     #上色
     # 路网层圆柱体颜色
-    color_cylinder = [0, 1, 0]  #绿色
-    #路网层球体 道路层四类球体 环境层
-    color_sphere = [[0,  1 ,0 ],[0, 0 , 0],[0.7, 1, 0],[0.7, 0, 1],[0.7, 1, 1],[0, 0, 1]] 
+    color_cylinder = [1.0, 192/255, 0] 
+    # 路网层球体 道路层四类球体 环境层
+    # color_sphere = [[0, 1, 0.117],[0, 0, 0],[0.7, 1, 0],[0.7, 0, 1],[0.7, 1, 1],[0, 0, 1]] 
+    color_sphere = [[1.0, 192/255, 0],[1, 83/255, 10/255],[10/255, 188/255, 1.0],[252/255, 154/255, 7/255],[7/255, 152/255,31/255],[145/255, 52/255, 235/255]] 
     # 创建已绘制线段的集合
     drawn_lines = set()
     # 创建路网球体
@@ -159,12 +156,12 @@ def color_by_road_net():
             cylinder.translate(translation)  # 将圆柱体平移到正确的位置
             # 设置圆柱颜色
             cylinder.paint_uniform_color(color_cylinder)
-            cylinder.compute_vertex_normals()
+            # cylinder.compute_vertex_normals()
             cylinders.append(cylinder)
     
     
     # 创建道路层球体
-    road_points=road_point()
+    road_points=road_point(save_lane_path)
     spheres_colors=[]
     for weight, points_list in road_points.items():
         for point in points_list:      
@@ -178,7 +175,9 @@ def color_by_road_net():
             spheres_road.append(sphere_road) 
 
     #创建环境层球体
-    Toppoint=(-4.447468, -150, 173.154769)
+    # Toppoint=(-4.447468,  173.154769)
+    Toppoint=(points_mean[0], -200, points_mean[2])
+    # Toppoint=(points_mean[0], points_mean[1], 260)
     sphere_env = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_radius * 2)
     sphere_env.translate(Toppoint)
     sphere_env.paint_uniform_color(color_sphere[5])
@@ -195,7 +194,7 @@ def color_by_road_net():
     points=o3d.utility.Vector3dVector(np.vstack(lines)),
     lines=o3d.utility.Vector2iVector(np.array([[i, len(lines)-1] for i in range(len(lines))]))
      )
-    line_set.paint_uniform_color([0, 0, 1])  # 设置连接线的颜色
+    line_set.paint_uniform_color([145/255, 52/255, 235/255])  # 设置连接线的颜色
     
     
     
@@ -212,10 +211,6 @@ def color_by_road_net():
     # vis.run()
     # vis.destroy_window()
     return spheres,cylinders,spheres_road,line_set,spheres_colors
-
-    
-    
-
 
 
 @hydra.main(version_base=None, config_path="../config", config_name="semantickitti")

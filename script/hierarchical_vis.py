@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import open3d as o3d
 import hydra
 from omegaconf import DictConfig
@@ -75,12 +75,12 @@ def load_colors(cfg):
 
 @hydra.main(version_base=None, config_path="../config", config_name="semantickitti")
 def main(cfg : DictConfig):
-    Instance_trans = np.array([0, -90, 0])
+    Instance_trans = np.array([0, -100, 0])
     # our_pcd = o3d.io.read_point_cloud("../results/05/pcd/rgb_pc.pcd") # 读取pcd文件
-    our_pcd = o3d.io.read_point_cloud("../results/05/pcd/our_pc.pcd") # 读取pcd文件
+    our_pcd = o3d.io.read_point_cloud(cfg.our_pcd) # 读取pcd文件
     
     # 加载pcd结果
-    objects, bg_objects = load_result("../results/05/pcd/full_pcd_llama_all.pkl.gz")
+    objects, bg_objects = load_result(cfg.result_path)
     # 不用背景物体
     # if bg_objects is not None:
     #     indices_bg = np.arange(len(objects), len(objects) + len(bg_objects))
@@ -89,7 +89,7 @@ def main(cfg : DictConfig):
     bboxes = copy.deepcopy(objects.get_values("bbox"))
 
     #从script.roadnet_xzy中取到路网层球体、路网层连接圆柱、道路层球体（其中最后一个是最上边环境层球体）、道路层和环境层连线 
-    spheres,cylinders,spheres_road,line_set,spheres_colors=color_by_road_net()
+    spheres,cylinders,spheres_road,line_set,spheres_colors=color_by_road_net(cfg.save_lane_path)
     # 获得道路层球体中心的xy值
     spheres_centers = []
 
@@ -108,16 +108,22 @@ def main(cfg : DictConfig):
     
     import os
     loaded_view_params = None
-    if os.path.isfile("/home/dyn/outdoor/omm/test/param.json"):
-        loaded_view_params = o3d.io.read_pinhole_camera_parameters("/home/dyn/outdoor/omm/test/param.json")
+    if os.path.isfile("/code1/dyn/github_repos/OpenGraph/param.json"):
+        loaded_view_params = o3d.io.read_pinhole_camera_parameters("/code1/dyn/github_repos/OpenGraph/param.json")
         view_control.convert_from_pinhole_camera_parameters(loaded_view_params)
     
     vis.add_geometry(our_pcd.voxel_down_sample(1))
     
+    if os.path.isfile("/code1/dyn/github_repos/OpenGraph/param.json"):
+        print("view_control ing")
+        loaded_view_params = o3d.io.read_pinhole_camera_parameters("/code1/dyn/github_repos/OpenGraph/param.json")
+        view_control.convert_from_pinhole_camera_parameters(loaded_view_params)
+        print("view_control ed")
+    
     
     # 加载物体间关系
     scene_graph_geometries = []
-    with open("../results/05/pcd/object_relations_all.json", "r") as f:
+    with open(cfg.scenegraph_path, "r") as f:
         edges = json.load(f)
     # 最好展示的物体都有边连接
     pair_indices_set = set()
@@ -195,12 +201,12 @@ def main(cfg : DictConfig):
 
     def save_view_params(vis):
         loaded_view_params = vis.get_view_control().convert_to_pinhole_camera_parameters()
-        o3d.io.write_pinhole_camera_parameters("/home/dyn/outdoor/omm/test/param.json", loaded_view_params)
+        o3d.io.write_pinhole_camera_parameters("/code1/dyn/github_repos/OpenGraph/param.json", loaded_view_params)
 
     def restore_viewpoint(vis):
-        if os.path.isfile("/home/dyn/outdoor/omm/test/param.json"):
+        if os.path.isfile("/code1/dyn/github_repos/OpenGraph/param.json"):
             print("view_control ing")
-            loaded_view_params = o3d.io.read_pinhole_camera_parameters("/home/dyn/outdoor/omm/test/param.json")
+            loaded_view_params = o3d.io.read_pinhole_camera_parameters("/code1/dyn/github_repos/OpenGraph/param.json")
             view_control.convert_from_pinhole_camera_parameters(loaded_view_params)
             print("view_control ed")
             

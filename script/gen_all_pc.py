@@ -3,7 +3,7 @@
 执行定量分析，语义分割，得到我们的点云
 """
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import copy
 import json
 import os
@@ -87,10 +87,10 @@ def load_colors(cfg):
     
 @hydra.main(version_base=None, config_path="../config", config_name="semantickitti")
 def main(cfg : DictConfig):
-    assert not (cfg.result_path_pc is None), \
-        "Either result_path_pc must be provided."
+    assert not (cfg.result_path is None), \
+        "Either result_path must be provided."
     # 加载pcd结果
-    objects, bg_objects, instance_colors = load_result(cfg.result_path_pc)
+    objects, bg_objects, instance_colors = load_result(cfg.result_path)
     class_colors_sk_disk = load_colors(cfg)
     # 如果存在背景物体，放在后面一部分
     if bg_objects is not None:

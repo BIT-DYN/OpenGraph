@@ -3,7 +3,7 @@
 用于点云之间的融合的一些工具代码
 """
 import sys
-sys.path.append("/home/dyn/outdoor/omm")
+sys.path.append("/code1/dyn/github_repos/OpenGraph")
 import torch
 import torch.nn.functional as F
 from some_class.map_calss import DetectionList, MapObjectList

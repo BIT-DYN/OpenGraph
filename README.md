@@ -90,6 +90,12 @@ git clone https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 Follow the [official installation](https://github.com/meta-llama/llama) of Llama2 to install it.
 
 
+###  Install 4DMOS
+Follow the [official installation](https://github.com/PRBonn/4DMOS.git) of 4DMOS to install it.
+
+We use the [weight 10_scans.ckpt](https://www.ipb.uni-bonn.de/html/projects/4DMOS/10_scans.zip)
+
+
 
 ### Clone this repo
 
@@ -158,7 +164,19 @@ Visualize the hierarchical scene graph of the final build.
 ```bash
 python script/hierarchical_vis.py
 ```
+Then in the open3d visualizer window, you can use the following key callbacks to change the visualization.
 
+Press V to save current view_params.
+
+Press X to load saved view_params.
+
+Press I to vis instance bbox.
+
+Press G to vis the lines among instance bbox.
+
+Press O to vis the left layers.
+
+Press L to vis the lines among layers.
 
 ## 🔗 Citation
 

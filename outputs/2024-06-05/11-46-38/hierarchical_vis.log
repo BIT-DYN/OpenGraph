@@ -1,0 +1,4 @@
+[2024-06-05 11:46:43,344][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpwzbxrj4v
+[2024-06-05 11:46:43,344][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpwzbxrj4v/_remote_module_non_scriptable.py
+[2024-06-05 11:46:49,830][faiss.loader][INFO] - Loading faiss with AVX2 support.
+[2024-06-05 11:46:49,868][faiss.loader][INFO] - Successfully loaded faiss with AVX2 support.
