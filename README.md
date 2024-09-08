@@ -183,7 +183,7 @@ Press ```L``` to vis the lines among layers.
 If you find our work helpful, please cite:
 
 ```bibtex
-@article{10638699,
+@article{opengraph,
   title={OpenGraph: Open-Vocabulary Hierarchical 3D Graph Representation in Large-Scale Outdoor Environments}, 
   author={Deng, Yinan and Wang, Jiahui and Zhao, Jingyu and Tian, Xinyu and Chen, Guangyan and Yang, Yi and Yue, Yufeng},
   journal={IEEE Robotics and Automation Letters}, 
