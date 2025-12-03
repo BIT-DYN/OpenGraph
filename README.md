@@ -95,7 +95,7 @@ Follow the [official installation](https://github.com/meta-llama/llama) of Llama
 
 ###  Install 4DMOS
 Follow the [official installation](https://github.com/PRBonn/4DMOS.git) of 4DMOS to install it.
-
+commit hash: b04651abb4f7f6ccc306d6e3bf345831348cc9f2
 We use the [weight 10_scans.ckpt](https://www.ipb.uni-bonn.de/html/projects/4DMOS/10_scans.zip)
 
 
