@@ -47,8 +47,10 @@ conda install https://anaconda.org/pytorch3d/pytorch3d/0.7.4/download/linux-64/p
 ###  Install TAG2TEXT Model
 
 ```bash
-mkdir third_parties & cd third_parties
+mkdir third_parties && cd third_parties
 git clone https://github.com/xinyu1205/recognize-anything.git
+cd recognize-anything && git checkout 84a8edc37fdf49ab49d6590047fa2ce189dd2155 && cd ..
+
 pip install -r ./recognize-anything/requirements.txt
 pip install -e ./recognize-anything/
 ```
@@ -75,6 +77,7 @@ wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alp
 
 ###  Install TAP Model
 Follow the [instructions](https://github.com/baaivision/tokenize-anything?tab=readme-ov-file#installation) to install the TAP model and download the pretrained weights [here](https://github.com/baaivision/tokenize-anything?tab=readme-ov-file#models).
+commit hash: 9d31431365dffdab57ecd396144d24a30585adbf
 
 
 ###  Install SBERT Model
