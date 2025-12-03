@@ -22,7 +22,7 @@ import open3d as o3d
 import hydra
 from omegaconf import DictConfig
 from utils.merge import merge_obj2_into_obj1
-import mos4d.models.models_test as models
+import mos4d.models.models as models
 
 # 一些背景常见的caption：道路，人行道
 # 背景可能产生的标签
